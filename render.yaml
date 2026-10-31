@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: iptv-master-pro
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: MP_ACCESS_TOKEN
+        sync: false
+      - key: MP_WEBHOOK_SECRET
+        sync: false
+      - key: BASE_URL
+        sync: false
+      - key: ADMIN_TOKEN
+        generateValue: true

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IPTV Master Pro</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#090909;color:white;font:16px Arial,sans-serif}.wrap{max-width:900px;margin:auto;padding:24px 5%}
+header{border-bottom:1px solid #292929;padding:18px 5%;font-weight:900;font-size:22px}header span{color:#e50920}
+.hero{padding:70px 0 35px;text-align:center}h1{font-size:clamp(36px,7vw,60px);margin:0 0 15px}h1 span{color:#e50920}p{color:#bbb;line-height:1.6}
+.card{max-width:460px;margin:25px auto;background:#171717;border:1px solid #3b2427;border-radius:14px;padding:25px;text-align:left}
+.price{font-size:36px;font-weight:900;color:#fff}.price small{font-size:14px;color:#aaa}
+label{display:block;margin:15px 0 6px;color:#ddd;font-size:14px}input{width:100%;padding:13px;border-radius:7px;border:1px solid #444;background:#090909;color:white}
+button{width:100%;padding:15px;margin-top:20px;border:0;border-radius:7px;background:#e50920;color:white;font-weight:bold;font-size:16px;cursor:pointer}
+#msg{font-size:13px;color:#ff9aa4;min-height:18px}.legal{font-size:12px;color:#888}
+</style></head><body>
+<header>IPTV <span>MASTER PRO</span></header><main class="wrap">
+<div class="hero"><h1>Seu entretenimento<br><span>em um só lugar</span></h1><p>Assinatura mensal com checkout seguro do Mercado Pago.</p></div>
+<div class="card"><div style="color:#ff5968;font-weight:bold">PLANO MENSAL</div><h2>Master Pro</h2><div class="price">R$ 19,90 <small>/ 30 dias</small></div><p>Informe seus dados para gerar o pagamento.</p>
+<form id="payForm"><label for="name">Nome</label><input id="name" required minlength="2" maxlength="100" autocomplete="name" placeholder="Seu nome">
+<label for="email">E-mail</label><input id="email" type="email" required maxlength="160" autocomplete="email" placeholder="voce@email.com">
+<button id="submit" type="submit">Continuar para Mercado Pago</button></form><div id="msg" role="status"></div>
+<p class="legal">O pagamento é processado pelo Mercado Pago. A ativação ocorre após confirmação no servidor. Assinatura desta versão: cobrança mensal avulsa, sem renovação automática. Disponível apenas para conteúdo com distribuição autorizada.</p>
+</div></main>
+<script>
+const f=document.getElementById('payForm'),btn=document.getElementById('submit'),msg=document.getElementById('msg');
+f.addEventListener('submit',async e=>{e.preventDefault();btn.disabled=true;btn.textContent='Gerando pagamento...';msg.textContent='';
+try{const r=await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('name').value,email:document.getElementById('email').value})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Não foi possível iniciar.');location.href=d.checkoutUrl}
+catch(err){msg.textContent=err.message;btn.disabled=false;btn.textContent='Continuar para Mercado Pago'}
+});
+const p=new URLSearchParams(location.search).get('pagamento');
+if(p==='sucesso')msg.textContent='Pagamento enviado para confirmação. Aguarde a atualização do acesso.';
+if(p==='pendente')msg.textContent='Pagamento pendente. O acesso será ativado após aprovação.';
+if(p==='falhou')msg.textContent='Pagamento não concluído. Você pode tentar novamente.';
+</script></body></html>
